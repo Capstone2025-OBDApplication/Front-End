@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:gravity="center_horizontal"> <!-- 화면 중앙으로 정렬 -->
+
+    <TextView
+        android:id="@+id/time"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="start"
+        android:paddingStart="16dp"
+        android:textSize="12sp"
+        android:textStyle="bold"
+        android:text="오전 07:30"
+        android:padding="8dp"
+        android:textColor="@color/gray"/>
+
+    <!-- 상단 굵은 선 -->
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="2dp"
+        android:background="@color/white" />
+
+    <!-- 표 내용: 2행 2열 GridLayout -->
+    <GridLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:columnCount="2"
+        android:rowCount="2"
+        android:padding="8dp">
+
+        <!-- 첫 번째 셀 (왼쪽 셀 크기를 크게) -->
+        <TextView
+            android:id="@+id/cell1"
+            android:layout_width="250dp"
+        android:layout_height="wrap_content"
+        android:text="급발진 오류 발생 의심 여부"
+        android:paddingStart="5dp"
+        android:padding="8dp"
+        android:gravity="left"
+        android:textStyle="bold"
+            android:textColor="@color/black"/>
+
+        <!-- 두 번째 셀 (배경색 빨강) -->
+        <TextView
+            android:id="@+id/cell2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="O"
+            android:padding="8dp"
+            android:gravity="center"
+        android:textColor="@color/red"/>
+
+        <!-- 세 번째 셀 (왼쪽 셀 크기 크게 설정) -->
+        <TextView
+            android:id="@+id/cell3"
+            android:layout_width="250dp"
+            android:layout_height="wrap_content"
+            android:text="급발진/급감속 횟수"
+            android:padding="8dp"
+            android:gravity="left"
+            android:textColor="@color/black"/>
+
+        <!-- 네 번째 셀 -->
+        <TextView
+            android:id="@+id/cell4"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="5"
+            android:padding="8dp"
+            android:gravity="center"
+            android:textColor="@color/black"/>
+    </GridLayout>
+
+    <!-- 하단 굵은 선 -->
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="2dp"
+        android:background="@color/white" />
+
+    <TextView
+        android:id="@+id/grahTitle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        android:text="압력센서 &amp; 속력 비교"
+        android:padding="8dp"
+        android:textColor="@color/black"/>
+
+    <com.example.sda.CustomGraphView
+        android:id="@+id/customGraphView"
+        android:layout_width="match_parent"
+        android:layout_height="300dp" />
+
+</LinearLayout>
