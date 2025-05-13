@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="16dp">
+
+    <TextView
+        android:id="@+id/titleTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="알림 기록"
+        android:textSize="25sp"
+        android:textColor="@color/black"
+        android:textStyle="bold"
+        android:layout_marginBottom="15dp"/>
+    <!-- 인디케이터 (심플한 파란 ProgressBar) -->
+    <ProgressBar
+        android:id="@+id/scrollIndicator"
+        style="?android:attr/progressBarStyleHorizontal"
+        android:layout_width="match_parent"
+        android:layout_height="4dp"
+        android:progress="0"
+        android:max="100"
+        android:progressDrawable="@drawable/line_blue"
+        android:layout_marginBottom="5dp"
+        android:layout_below="@id/titleTextView"/>
+
+
+    <com.example.sda.CustomGraphView
+        android:id="@+id/graphView"
+        android:layout_width="match_parent"
+        android:layout_height="400dp"
+        android:layout_below="@id/scrollIndicator"
+        />
+
+</RelativeLayout>
