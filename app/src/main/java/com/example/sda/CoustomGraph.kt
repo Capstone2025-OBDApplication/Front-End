@@ -113,7 +113,7 @@ class CustomGraphView @JvmOverloads constructor(
     }
 
     private fun updateButtonUI(button: TextView, isActive: Boolean) {
-        button.setTextColor(if (isActive) Color.BLUE else Color.DKGRAY)
+        button.setTextColor(if (isActive) resources.getColor(R.color.blue) else resources.getColor(R.color.gray))
         button.setTypeface(null, if (isActive) android.graphics.Typeface.BOLD else android.graphics.Typeface.NORMAL)
     }
 

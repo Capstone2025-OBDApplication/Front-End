@@ -28,7 +28,8 @@
         android:layout_height="wrap_content"
         android:padding="5dp"
         android:background="@drawable/rounded_background"
-        android:backgroundTint="@color/blue">
+        android:backgroundTint="@color/blue"
+        android:layout_marginBottom="20dp">
 
         <!-- 세로선 -->
         <View
@@ -117,21 +118,11 @@
             app:layout_constraintEnd_toEndOf="parent"/>
     </androidx.constraintlayout.widget.ConstraintLayout>
 
-    <TextView
-        android:id="@+id/grahTitle"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:gravity="center"
-        android:textSize="18sp"
-        android:textStyle="bold"
-        android:text="압력센서 &amp; 속력 비교"
-        android:padding="8dp"
-        android:textColor="@color/black"/>
-
     <com.example.sda.CustomGraphView
         android:id="@+id/graphView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="20dp"/>
+        android:layout_marginBottom="20dp"
+        android:gravity="center"/>
 
 </LinearLayout>

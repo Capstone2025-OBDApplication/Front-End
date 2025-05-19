@@ -144,6 +144,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:background="@drawable/rounded_background"
+            android:backgroundTint="@color/light_gray"
             android:text="날짜선택"
             android:textColor="@color/black"
             android:padding="12dp"
