@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 <resources xmlns:tools="http://schemas.android.com/tools">
     <!-- Base application theme. -->
     <style name="Theme.Sda" parent="Theme.MaterialComponents.DayNight.DarkActionBar">
@@ -14,3 +15,22 @@
         <!-- Customize your theme here. -->
     </style>
 </resources>
+=======
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <!-- 📌 애플리케이션 테마 -->
+    <style name="Theme.settings" parent="Theme.Material3.Light.NoActionBar">
+        <!-- 기본 색상 -->
+        <item name="colorPrimary">@color/black</item>
+        <item name="colorPrimaryVariant">@color/black</item>
+        <item name="colorOnPrimary">@color/white</item>
+
+        <!-- 배경 색상 -->
+        <item name="android:windowBackground">@color/white</item>
+
+        <!-- 액션바 제거 -->
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
+    </style>
+</resources>
+>>>>>>> main
