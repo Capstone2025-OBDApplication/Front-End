@@ -6,115 +6,112 @@ import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.widget.LinearLayout
 import android.widget.TextView
+import androidx.core.content.ContextCompat
 import com.github.mikephil.charting.charts.LineChart
-import com.github.mikephil.charting.components.Legend
 import com.github.mikephil.charting.data.Entry
 import com.github.mikephil.charting.data.LineData
 import com.github.mikephil.charting.data.LineDataSet
-import com.example.sda.R
+import com.github.mikephil.charting.highlight.Highlight
 
 class CustomGraphView @JvmOverloads constructor(
     context: Context, attrs: AttributeSet? = null
 ) : LinearLayout(context, attrs) {
 
-    private val speedDataSet = LineDataSet(mutableListOf(), "속도").apply {
-        color = Color.BLUE
-        setCircleColor(Color.BLUE)
-        lineWidth = 2f
-        setDrawCircles(false)
-    }
-    private val brakeDataSet = LineDataSet(mutableListOf(), "브레이크").apply {
-        color = Color.GREEN
-        setCircleColor(Color.GREEN)
-        lineWidth = 2f
-        setDrawCircles(false)
-    }
-    private val accelDataSet = LineDataSet(mutableListOf(), "엑셀").apply {
-        color = Color.MAGENTA
-        setCircleColor(Color.MAGENTA)
-        lineWidth = 2f
-        setDrawCircles(false)
-    }
-    private val rpmDataSet = LineDataSet(mutableListOf(), "RPM").apply {
-        color = Color.RED
-        setCircleColor(Color.RED)
-        lineWidth = 2f
-        setDrawCircles(false)
-    }
+    enum class GraphType { SPEED, RPM, BRAKE, ACCEL}
 
-    private val lineData = LineData(speedDataSet, brakeDataSet, accelDataSet, rpmDataSet)
-    private val highlightList = mutableListOf<Float>()
+    data class GraphInfo(
+        val label: String,
+        val color: Int,
+        var isVisible: Boolean = true
+    )
 
     private lateinit var chart: LineChart
-    private lateinit var btnSpeed: TextView
-    private lateinit var btnBrake: TextView
-    private lateinit var btnAccel: TextView
-    private lateinit var btnRpm: TextView
 
-    private var speedVisible = true
-    private var brakeVisible = true
-    private var accelVisible = true
-    private var rpmVisible = true
+    private lateinit var graphInfoMap: Map<GraphType, GraphInfo>
+    private lateinit var graphButtons: Map<GraphType, TextView>
+    private lateinit var graphDataSets: Map<GraphType, LineDataSet>
+
+    private lateinit var lineData: LineData
+    private val highlightList = mutableListOf<Float>()
 
     init {
         orientation = VERTICAL
         LayoutInflater.from(context).inflate(R.layout.custom_graph_view, this, true)
 
         chart = findViewById(R.id.graphChart)
-        btnSpeed = findViewById(R.id.btnSpeed)
-        btnBrake = findViewById(R.id.btnBrake)
-        btnAccel = findViewById(R.id.btnAccel)
-        btnRpm = findViewById(R.id.btnRpm)
+        chart.description.isEnabled = false
 
-        chart.data = lineData
-        chart.isDragEnabled = true
-        chart.setScaleEnabled(false)
-        chart.legend.verticalAlignment = Legend.LegendVerticalAlignment.TOP
-        chart.legend.form = Legend.LegendForm.CIRCLE
-        chart.legend.horizontalAlignment = Legend.LegendHorizontalAlignment.CENTER
+        graphButtons = mapOf(
+            GraphType.SPEED to findViewById(R.id.btnSpeed),
+            GraphType.RPM to findViewById(R.id.btnRpm),
+            GraphType.BRAKE to findViewById(R.id.btnBrake),
+            GraphType.ACCEL to findViewById(R.id.btnAccel)
+        )
 
-        val leftAxis = chart.axisLeft
-        leftAxis.axisMinimum = 0f
-        leftAxis.axisMaximum = 250f
+        graphInfoMap = mapOf(
+            GraphType.SPEED to GraphInfo("속도", ContextCompat.getColor(context, R.color.orange)),
+            GraphType.RPM to GraphInfo("RPM", ContextCompat.getColor(context, R.color.green)),
+            GraphType.BRAKE to GraphInfo("브레이크", ContextCompat.getColor(context, R.color.another_blue)),
+            GraphType.ACCEL to GraphInfo("엑셀", ContextCompat.getColor(context, R.color.purple))
+        )
 
-        val rightAxis = chart.axisRight
-        rightAxis.axisMaximum = 200f
+        graphDataSets = graphInfoMap.mapValues { (type, info) ->
+            LineDataSet(mutableListOf(), info.label).apply {
+                color = info.color
+                setCircleColor(info.color)
+                lineWidth = 2f
+                setDrawCircles(false)
+                isVisible = info.isVisible
+            }
+        }
 
+        lineData = LineData(graphDataSets.values.toList())
+        lineData.setDrawValues(false)
+        initChart()
         setupButtons()
+
         chart.setRenderer(CustomLineChartRenderer(chart, chart.animator, chart.viewPortHandler))
         chart.invalidate()
     }
 
+    private fun initChart() {
+        chart.data = lineData
+        chart.isDragEnabled = true
+        chart.setScaleEnabled(false)
+        chart.legend.isEnabled = false
+
+        chart.axisLeft.axisMinimum = 0f
+        chart.axisLeft.axisMaximum = 250f
+        chart.axisRight.axisMaximum = 200f
+    }
+
     private fun setupButtons() {
-        btnSpeed.setOnClickListener {
-            speedVisible = !speedVisible
-            updateGraph()
-            updateButtonUI(btnSpeed, speedVisible)
-        }
-        btnBrake.setOnClickListener {
-            brakeVisible = !brakeVisible
-            updateGraph()
-            updateButtonUI(btnBrake, brakeVisible)
-        }
-        btnAccel.setOnClickListener {
-            accelVisible = !accelVisible
-            updateGraph()
-            updateButtonUI(btnAccel, accelVisible)
-        }
-        btnRpm.setOnClickListener {
-            rpmVisible = !rpmVisible
-            updateGraph()
-            updateButtonUI(btnRpm, rpmVisible)
+        graphButtons.forEach { (type, button) ->
+            button.setOnClickListener {
+                graphInfoMap[type]?.let { info ->
+                    info.isVisible = !info.isVisible
+                    graphDataSets[type]?.isVisible = info.isVisible
+                    updateButtonUI(type)
+                    updateChart()
+                }
+            }
+            updateButtonUI(type)
         }
     }
 
-    private fun updateGraph() {
-        toggleVisibility(speedVisible, brakeVisible, accelVisible, rpmVisible)
+    private fun updateButtonUI(type: GraphType) {
+        val info = graphInfoMap[type] ?: return
+        val button = graphButtons[type] ?: return
+        button.setTextColor(
+            if (info.isVisible) info.color else ContextCompat.getColor(context, R.color.gray)
+        )
+        button.setTypeface(null, if (info.isVisible) Typeface.BOLD else Typeface.NORMAL)
     }
 
-    private fun updateButtonUI(button: TextView, isActive: Boolean) {
-        button.setTextColor(if (isActive) resources.getColor(R.color.blue) else resources.getColor(R.color.gray))
-        button.setTypeface(null, if (isActive) android.graphics.Typeface.BOLD else android.graphics.Typeface.NORMAL)
+    private fun updateChart() {
+        lineData.notifyDataChanged()
+        chart.notifyDataSetChanged()
+        chart.invalidate()
     }
 
     fun updateData(
@@ -125,10 +122,10 @@ class CustomGraphView @JvmOverloads constructor(
         rpm: Float? = null,
         highlight: Boolean = false
     ) {
-        speed?.let { speedDataSet.addEntry(Entry(xValue, it)) }
-        brake?.let { brakeDataSet.addEntry(Entry(xValue, it)) }
-        accel?.let { accelDataSet.addEntry(Entry(xValue, it)) }
-        rpm?.let { rpmDataSet.addEntry(Entry(xValue, it)) }
+        speed?.let { graphDataSets[GraphType.SPEED]?.addEntry(Entry(xValue, it)) }
+        brake?.let { graphDataSets[GraphType.BRAKE]?.addEntry(Entry(xValue, it)) }
+        accel?.let { graphDataSets[GraphType.ACCEL]?.addEntry(Entry(xValue, it)) }
+        rpm?.let { graphDataSets[GraphType.RPM]?.addEntry(Entry(xValue, it)) }
 
         if (highlight) highlightList.add(xValue)
 
@@ -137,9 +134,7 @@ class CustomGraphView @JvmOverloads constructor(
         }
 
         chart.moveViewToX(xValue)
-        lineData.notifyDataChanged()
-        chart.notifyDataSetChanged()
-        chart.invalidate()
+        updateChart()
     }
 
     fun setDataLists(
@@ -149,30 +144,29 @@ class CustomGraphView @JvmOverloads constructor(
         rpmList: List<Entry>,
         highlightXs: List<Float> = emptyList()
     ) {
-        speedDataSet.clear(); speedDataSet.values = speedList
-        brakeDataSet.clear(); brakeDataSet.values = brakeList
-        accelDataSet.clear(); accelDataSet.values = accelList
-        rpmDataSet.clear(); rpmDataSet.values = rpmList
+        graphDataSets[GraphType.SPEED]?.apply {
+            clear()
+            values = speedList
+        }
+        graphDataSets[GraphType.BRAKE]?.apply {
+            clear()
+            values = brakeList
+        }
+        graphDataSets[GraphType.ACCEL]?.apply {
+            clear()
+            values = accelList
+        }
+        graphDataSets[GraphType.RPM]?.apply {
+            clear()
+            values = rpmList
+        }
 
         highlightList.clear()
         highlightList.addAll(highlightXs)
 
         chart.xAxis.axisMaximum = (speedList.maxOfOrNull { it.x } ?: 0f).coerceAtLeast(10f)
 
-        lineData.notifyDataChanged()
-        chart.notifyDataSetChanged()
-        chart.invalidate()
-    }
-
-    fun toggleVisibility(speed: Boolean, brake: Boolean, accel: Boolean, rpm: Boolean) {
-        speedDataSet.isVisible = speed
-        brakeDataSet.isVisible = brake
-        accelDataSet.isVisible = accel
-        rpmDataSet.isVisible = rpm
-
-        lineData.notifyDataChanged()
-        chart.notifyDataSetChanged()
-        chart.invalidate()
+        updateChart()
     }
 
     fun setHighlightList(list: List<Float>) {
@@ -189,9 +183,9 @@ class CustomGraphView @JvmOverloads constructor(
         override fun drawExtras(c: Canvas) {
             super.drawExtras(c)
             highlightList.forEach { centerX ->
-                val left = chart.getTransformer(speedDataSet.axisDependency)
+                val left = chart.getTransformer(chart.axisLeft.axisDependency)
                     .getPixelForValues(centerX - 3, 0f).x.toFloat()
-                val right = chart.getTransformer(speedDataSet.axisDependency)
+                val right = chart.getTransformer(chart.axisLeft.axisDependency)
                     .getPixelForValues(centerX + 3, 0f).x.toFloat()
                 val top = chart.viewPortHandler.contentTop()
                 val bottom = chart.viewPortHandler.contentBottom()
