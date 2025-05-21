@@ -33,25 +33,6 @@
             android:text="속도"
             android:gravity="center"
             android:textStyle="bold"
-            android:textColor="@color/blue"
-            android:layout_marginRight="20dp"/>
-
-        <TextView
-            android:id="@+id/btnBrake"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="브레이크"
-            android:textStyle="bold"
-            android:textColor="@color/blue"
-            android:layout_marginRight="20dp"/>
-
-        <TextView
-            android:id="@+id/btnAccel"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="엑셀"
-            android:textStyle="bold"
-            android:textColor="@color/blue"
             android:layout_marginRight="20dp"/>
 
         <TextView
@@ -60,6 +41,21 @@
             android:layout_height="wrap_content"
             android:text="RPM"
             android:textStyle="bold"
-            android:textColor="@color/blue"/>
+            android:layout_marginRight="20dp"/>
+
+        <TextView
+            android:id="@+id/btnBrake"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="브레이크"
+            android:textStyle="bold"
+            android:layout_marginRight="20dp"/>
+
+        <TextView
+            android:id="@+id/btnAccel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="엑셀"
+            android:textStyle="bold"/>
     </LinearLayout>
 </merge>
