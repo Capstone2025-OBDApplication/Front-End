@@ -1,40 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
-<<<<<<< HEAD
-<menu xmlns:android="http://schemas.android.com/apk/res/android"
-    android:shadowColor="#55000000"
-    android:elevation="10dp">
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
 
     <item
         android:id="@+id/navigation_notifications"
         android:icon="@drawable/ic_notifications"
         android:title="알림 기록" />
+
     <item
         android:id="@+id/navigation_driving"
         android:icon="@drawable/ic_driving"
         android:title="운전 기록" />
+
     <item
         android:id="@+id/navigation_settings"
         android:icon="@drawable/ic_settings"
         android:title="환경 설정" />
-</menu>
-
-=======
-<menu xmlns:android="http://schemas.android.com/apk/res/android">
-
-    <item
-        android:id="@+id/nav_alert"
-        android:icon="@drawable/baseline_circle_notifications_24"
-        android:title="알림" />
-
-    <item
-        android:id="@+id/nav_drive"
-        android:icon="@drawable/baseline_drive_eta_24"
-        android:title="운전 기록" />
-
-    <item
-        android:id="@+id/nav_settings"
-        android:icon="@drawable/baseline_app_settings_alt_24"
-        android:title="환경 설정" />
 
 </menu>
->>>>>>> main
