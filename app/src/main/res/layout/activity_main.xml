@@ -9,15 +9,20 @@
     android:background="#000000"
     android:padding="16dp">
 
-    <ImageView
+    <androidx.appcompat.widget.AppCompatImageView
         android:id="@+id/imageView"
-        android:layout_width="451dp"
-        android:layout_height="368dp"
+        android:layout_width="300dp"
+        android:layout_height="250dp"
         android:layout_marginBottom="12dp"
+        android:contentDescription="@string/emergency_icon"
+        app:srcCompat="@drawable/triangle"
         app:layout_constraintBottom_toTopOf="@+id/instructionText"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:srcCompat="@drawable/triangle" />
+        app:layout_constraintHorizontal_bias="0.493" />
+
+
+
 
     <TextView
         android:id="@+id/text112"
@@ -32,6 +37,7 @@
         android:textColor="#FF0000"
         android:textSize="56sp"
         android:textStyle="bold"
+        android:contentDescription="@string/description_text112"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.532"
         app:layout_constraintStart_toStartOf="parent"
@@ -43,7 +49,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
-        android:text="신고할까요?"
+        android:text="@string/report_question"
         android:textColor="#FFFFFF"
         android:textSize="30sp"
         app:layout_constraintEnd_toEndOf="parent"
@@ -56,8 +62,9 @@
         android:layout_width="148dp"
         android:layout_height="42dp"
         android:layout_marginTop="292dp"
-        android:text="급발진 오류 감지"
+        android:text="@string/error_detection"
         android:textColor="#FF0000"
+        android:contentDescription="@string/description_errorDetectionText"
         android:textSize="20sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.497"
@@ -72,7 +79,7 @@
         android:layout_marginTop="128dp"
         android:background="#FF0000"
         android:padding="16dp"
-        android:text="‘예’라고 말하거나 음량 버튼을 누르세요"
+        android:text="@string/instruction"
         android:textColor="#FFFFFF"
         android:textSize="20sp"
         app:layout_constraintEnd_toEndOf="parent"
@@ -84,8 +91,7 @@
         android:id="@+id/countDownText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="52dp"
-        android:text="신고(10s)"
+        android:text="@string/report_timer"
         android:textColor="#FFFFFF"
         android:textSize="50sp"
         app:layout_constraintEnd_toEndOf="parent"
@@ -96,14 +102,15 @@
         android:id="@+id/cancelButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="28dp"
-        android:background="@drawable/rounded_button"
-        android:text="취소"
+        android:layout_marginTop="32dp"
+        android:background="@drawable/rounded_background"
+        android:text="@string/cancel"
         android:textColor="#000000"
         android:textSize="20sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.487"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/countDownText" />
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>

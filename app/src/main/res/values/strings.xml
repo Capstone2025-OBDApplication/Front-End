@@ -1,4 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <!-- 앱 이름은 하나만 유지하거나 다른 이름으로 복사 -->
     <string name="app_name">My Application5</string>
+
+    <!-- 다른 문자열 -->
+    <string name="speed">Speed</string>
+    <string name="brake">Brake</string>
+    <string name="accel">Accel</string>
+    <string name="rpm">RPM</string>
     <string name="emergency_number">112</string>
+    <string name="title_home">Home</string>
+    <string name="title_dashboard">Dashboard</string>
+    <string name="title_notifications">Notifications</string>
+    <string name="emergency_icon">경고 아이콘</string>
+    <string name="report_question">신고할까요?</string>
+    <string name="error_detection">급발진 오류 감지</string>
+    <string name="instruction">"‘예’라고 말하거나 음량 버튼을 누르세요"</string>
+    <string name="report_timer">신고(10s)</string>
+    <string name="cancel">취소</string>
+    <string name="emergency_instruction">음성 안내를 따르세요</string>
+    <string name="emergency_question">신고할까요?</string>
+    <string name="emergency_countdown">10초 후 신고됩니다</string>
+    <string name="description_text112">긴급 전화 번호</string>
+    <string name="description_errorDetectionText">급발진 오류 감지 안내 텍스트</string>
+    <!-- 필요 시 중복 이름 수정 -->
+
+
 </resources>
