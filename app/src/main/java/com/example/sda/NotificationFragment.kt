@@ -15,20 +15,25 @@ import android.view.View.GONE
 import android.view.View.VISIBLE
 import android.widget.ImageView
 import androidx.core.graphics.drawable.DrawableCompat
+import com.google.firebase.firestore.FirebaseFirestore
+import android.util.Log
+import java.text.SimpleDateFormat
+import java.util.Locale
+import java.util.Date
+
 
 class NotificationFragment : Fragment() {
 
     data class NotificationItem(
-        val findSDA: String,
-        val date: String,
-        val isCall: Pair<Boolean, String>,
-        val callNum: Pair<String, String>
+        val category : String,
+        val type : String,
+        val timestamp : Date
     )
-
-    private val notifications = listOf(
-        NotificationItem("오전 07:32", "2024. 10. 29.(화)", Pair(true, "오전 07:32"), Pair("112", "오전 07:33")),
-        NotificationItem("오후 03:45", "2024. 10. 28.(월)", Pair(false, "오후 03:45"), Pair("", ""))
-    )
+    sealed class NotificationDisplayItem {
+        data class DateHeader(val date: String) : NotificationDisplayItem()
+        data class NotificationData(val item: NotificationItem) : NotificationDisplayItem()
+    }
+    private val adapter = NotificationAdapter()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
@@ -37,59 +42,153 @@ class NotificationFragment : Fragment() {
 
         val recyclerView = view.findViewById<RecyclerView>(R.id.recyclerView)
         recyclerView.layoutManager = LinearLayoutManager(context)
-        recyclerView.adapter = NotificationAdapter(notifications)
+        recyclerView.adapter = adapter
 
         val backButton = view.findViewById<ImageView>(R.id.ic_back)
 
+        val db = FirebaseFirestore.getInstance()
+
+        db.collection("alarm_data")
+            .orderBy("timestamp")
+            .get()
+            .addOnSuccessListener { result ->
+                val notificationList = result.mapNotNull { doc ->
+                    val category = doc.getString("category")
+                    val type = doc.getString("type")
+                    val timestamp = doc.getTimestamp("timestamp")?.toDate()
+
+                    if (category == null || type == null || timestamp == null) {
+                        null
+                    } else {
+                        NotificationItem(category, type, timestamp)
+                    }
+                }
+                val displayList = buildDisplayList(notificationList)
+                adapter.submitList(displayList)
+            }
+            .addOnFailureListener { e ->
+                Log.w("Firestore", "데이터 가져오기 실패", e)
+            }
+            /*
+         val notifications = listOf(
+            NotificationItem("detect", "accept", "2024-05-26T15:10:03Z"),
+            NotificationItem("call", "accept", "2024-05-26T15:10:03Z"),
+            NotificationItem("call", "112", "2024-05-26T15:10:03Z")
+        )
+        val testList = buildDisplayList(notifications)
+        adapter.submitList(testList)*/
         return view
     }
+    private fun buildDisplayList(items: List<NotificationItem>): List<NotificationDisplayItem> {
+        val sdfInput = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'", Locale.getDefault())
+        val sdfOutput = SimpleDateFormat("yyyy. MM. dd(E)", Locale.KOREAN)
 
-    class NotificationAdapter(private val notifications: List<NotificationItem>) :
-        RecyclerView.Adapter<NotificationAdapter.NotificationViewHolder>() {
+        val result = mutableListOf<NotificationDisplayItem>()
+        var lastDate: String? = null
+
+        for (item in items) {
+            val dateStr = sdfOutput.format(item.timestamp)
+
+            if (dateStr != lastDate) {
+                result.add(NotificationDisplayItem.DateHeader(dateStr))
+                lastDate = dateStr
+            }
+
+            result.add(NotificationDisplayItem.NotificationData(item))
+        }
+
+        return result
+    }
+    class NotificationAdapter:
+        RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+
+        companion object {
+            private const val VIEW_TYPE_DATE = 0
+            private const val VIEW_TYPE_ITEM = 1
+        }
+
+        private var items: List<NotificationDisplayItem> = emptyList()
+
+        fun submitList(list: List<NotificationDisplayItem>) {
+            items = list
+            notifyDataSetChanged()
+        }
+
+        override fun getItemViewType(position: Int): Int {
+            return when (items[position]) {
+                is NotificationDisplayItem.DateHeader -> VIEW_TYPE_DATE
+                is NotificationDisplayItem.NotificationData -> VIEW_TYPE_ITEM
+            }
+        }
+
+        override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
+            return when (viewType) {
+                VIEW_TYPE_DATE -> {
+                    val view = LayoutInflater.from(parent.context)
+                        .inflate(R.layout.item_notification_date, parent, false)
+                    DateViewHolder(view)
+                }
+                else -> {
+                    val view = LayoutInflater.from(parent.context)
+                        .inflate(R.layout.item_notification, parent, false)
+                    NotificationViewHolder(view)
+                }
+            }
+        }
+
+        override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
+            val item = items[position]
+            when (item) {
+                is NotificationDisplayItem.DateHeader -> (holder as DateViewHolder).bind(item.date)
+                is NotificationDisplayItem.NotificationData -> (holder as NotificationViewHolder).bind(item.item)
+            }
+        }
+        override fun getItemCount() = items.size
+
+        inner class DateViewHolder(view: View) : RecyclerView.ViewHolder(view) {
+            private val dateText: TextView = view.findViewById(R.id.dateTextView)
+            fun bind(date: String) {
+                dateText.text = date
+            }
+        }
 
         inner class NotificationViewHolder(view: View) : RecyclerView.ViewHolder(view) {
-            val dateTextView: TextView = view.findViewById(R.id.dateTextView)
-            val isCallTextView: TextView = view.findViewById(R.id.isCallTextView)
-            val findSDATextView: TextView = view.findViewById(R.id.findSDATextView)
-            val callNumTextView: TextView = view.findViewById(R.id.callNumTextView)
-            val isCallTimeTextView: TextView = view.findViewById((R.id.isCallTimeTextView))
-            val findSDATimeTextView: TextView = view.findViewById((R.id.findSDATimeTextView))
-            val callNumTimeTextView: TextView = view.findViewById((R.id.callNumTimeTextView))
-            val callNumDataTextView: TextView = view.findViewById((R.id.callNumDataTextView))
-            val callNumberLinearLayout: LinearLayout = view.findViewById((R.id.callNumLinearLayout))
-            val isCallData: TextView = view.findViewById((R.id.isCallDataTextView))
-            val isCallDataIcon: View = view.findViewById((R.id.isCallDataIcon))
-        }
+            private val icon: ImageView = view.findViewById(R.id.notificationIcon)
+            private val title: TextView = view.findViewById(R.id.notificationTitle)
+            private val detail: TextView = view.findViewById(R.id.notificationDetail)
+            private val time: TextView = view.findViewById(R.id.notificationTime)
 
-        override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): NotificationViewHolder {
-            val view = LayoutInflater.from(parent.context).inflate(R.layout.item_notification, parent, false)
-            return NotificationViewHolder(view)
-        }
+            fun bind(item: NotificationItem) {
+                val timeOnly = SimpleDateFormat("HH:mm", Locale.getDefault()).format(item.timestamp)
+                time.text = timeOnly
 
-        override fun onBindViewHolder(holder: NotificationViewHolder, position: Int) {
-            val item = notifications[position]
+                when (item.category) {
+                    "detect" -> {
+                        icon.setImageResource(R.drawable.ic_notification_detect)
+                        title.text = "급발진 감지"
+                        detail.visibility = View.GONE
+                    }
+                    "call" -> {
+                        when (item.type) {
+                            "accept", "deny" -> {
+                                icon.setImageResource(R.drawable.ic_notificaiton_call)
+                                title.text = "신고 전화 의사 확인"
+                                detail.text = "승인"
 
-            holder.dateTextView.text = item.date
-            holder.findSDATextView.text = "급발진이 감지되었습니다."
-            holder.findSDATimeTextView.text =item.findSDA
-            holder.isCallTextView.text = "긴급 신고 전화 여부를 물었습니다."
-            holder.isCallTimeTextView.text = item.isCall.second
-            if (item.isCall.first) {
-                holder.callNumTextView.text = "긴급 신고 전화가 작동되었습니다."
-                holder.callNumTimeTextView.text = item.callNum.second
-                holder.callNumDataTextView.text = item.callNum.first
-                holder.isCallData.text = "승인"
-                DrawableCompat.setTint(holder.isCallDataIcon.background, Color.BLUE)
-            }
-            else {
-                holder.callNumberLinearLayout.layoutParams.height = 0
-                holder.callNumberLinearLayout.requestLayout()
-                holder.isCallData.text = "거부"
-                DrawableCompat.setTint(holder.isCallDataIcon.background, Color.RED)
-                holder.isCallData.setTextColor(Color.RED)
+                                if (item.type == "deny") {
+                                    detail.text = "거부"
+                                    detail.setTextColor(Color.RED)
+                                }
+                            }
+                            else -> {
+                                icon.setImageResource(R.drawable.ic_notificaiton_callnum)
+                                title.text = "신고 전화 발신"
+                                detail.text = item.type
+                            }
+                        }
+                    }
+                }
             }
         }
-
-        override fun getItemCount() = notifications.size
     }
 }
