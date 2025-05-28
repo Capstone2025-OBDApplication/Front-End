@@ -33,7 +33,7 @@
             android:textStyle="bold"/>
     </LinearLayout>
 
-    <!-- RecyclerView (텍스트 목록만 표시) -->
+    <!-- RecyclerView (날짜 구분선이랑.... 알림 목록....) -->
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerView"
         android:layout_width="match_parent"
