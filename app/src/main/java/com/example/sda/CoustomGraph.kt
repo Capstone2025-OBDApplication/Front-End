@@ -1,12 +1,15 @@
 package com.example.sda
 
 import android.content.Context
+import android.content.res.ColorStateList
 import android.graphics.*
 import android.util.AttributeSet
 import android.view.LayoutInflater
+import android.widget.CheckBox
 import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.core.content.ContextCompat
+import androidx.core.widget.CompoundButtonCompat
 import com.github.mikephil.charting.charts.LineChart
 import com.github.mikephil.charting.data.Entry
 import com.github.mikephil.charting.data.LineData
@@ -28,7 +31,7 @@ class CustomGraphView @JvmOverloads constructor(
     private lateinit var chart: LineChart
 
     private lateinit var graphInfoMap: Map<GraphType, GraphInfo>
-    private lateinit var graphButtons: Map<GraphType, TextView>
+    private lateinit var graphButtons: Map<GraphType, CheckBox>
     private lateinit var graphDataSets: Map<GraphType, LineDataSet>
 
     private lateinit var lineData: LineData
@@ -87,15 +90,20 @@ class CustomGraphView @JvmOverloads constructor(
 
     private fun setupButtons() {
         graphButtons.forEach { (type, button) ->
-            button.setOnClickListener {
-                graphInfoMap[type]?.let { info ->
-                    info.isVisible = !info.isVisible
-                    graphDataSets[type]?.isVisible = info.isVisible
+            graphInfoMap[type]?.let { info ->
+                CompoundButtonCompat.setButtonTintList(
+                    button,
+                    ColorStateList.valueOf(info.color)
+                )
+                button.setOnCheckedChangeListener { _, isChecked ->
+                    info.isVisible = isChecked
+                    graphDataSets[type]?.isVisible = isChecked
                     updateButtonUI(type)
                     updateChart()
+
                 }
+                updateButtonUI(type)
             }
-            updateButtonUI(type)
         }
     }
 
@@ -103,9 +111,14 @@ class CustomGraphView @JvmOverloads constructor(
         val info = graphInfoMap[type] ?: return
         val button = graphButtons[type] ?: return
         button.setTextColor(
-            if (info.isVisible) info.color else ContextCompat.getColor(context, R.color.gray)
+            if (info.isVisible) ContextCompat.getColor(context, R.color.black) else ContextCompat.getColor(context, R.color.gray)
         )
-        button.setTypeface(null, if (info.isVisible) Typeface.BOLD else Typeface.NORMAL)
+        CompoundButtonCompat.setButtonTintList(
+            button,
+            ColorStateList.valueOf(
+                if (info.isVisible) info.color else ContextCompat.getColor(context, R.color.gray)
+            )
+        )
     }
 
     private fun updateChart() {
