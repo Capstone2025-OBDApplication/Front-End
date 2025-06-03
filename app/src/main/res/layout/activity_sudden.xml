@@ -15,7 +15,7 @@
         android:layout_height="250dp"
         android:layout_marginBottom="12dp"
         android:contentDescription="@string/emergency_icon"
-        app:srcCompat="@drawable/triangle"
+        app:srcCompat="@drawable/ic_triangle"
         app:layout_constraintBottom_toTopOf="@+id/instructionText"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

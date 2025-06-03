@@ -19,7 +19,7 @@ class SuddenActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_sudden)
-
+        supportActionBar?.hide()
 
 
         val cancelButton: Button = findViewById(R.id.cancelButton)

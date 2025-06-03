@@ -1,5 +1,6 @@
 package com.example.canstone2
 
+import android.content.Intent
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
@@ -68,7 +69,10 @@ class MonitoringFragment : Fragment() {
             rpm = rpm,
             highlight = isSuddenAccel
         )
-
+        if (isAdded && isSuddenAccel) {
+            val intent = Intent(requireContext(), SuddenActivity::class.java)
+            startActivity(intent)
+        }
         index++
         handler.postDelayed({ simulateRealTimeUpdate() }, 500)
     }
