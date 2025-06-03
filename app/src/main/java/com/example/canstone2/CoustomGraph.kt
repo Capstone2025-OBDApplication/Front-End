@@ -1,4 +1,4 @@
-package com.example.sda
+package com.example.canstone2
 
 import android.content.Context
 import android.content.res.ColorStateList
@@ -7,14 +7,12 @@ import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.widget.CheckBox
 import android.widget.LinearLayout
-import android.widget.TextView
 import androidx.core.content.ContextCompat
 import androidx.core.widget.CompoundButtonCompat
 import com.github.mikephil.charting.charts.LineChart
 import com.github.mikephil.charting.data.Entry
 import com.github.mikephil.charting.data.LineData
 import com.github.mikephil.charting.data.LineDataSet
-import com.github.mikephil.charting.highlight.Highlight
 
 class CustomGraphView @JvmOverloads constructor(
     context: Context, attrs: AttributeSet? = null

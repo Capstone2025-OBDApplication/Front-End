@@ -1,4 +1,4 @@
-package com.example.sda
+package com.example.canstone2
 
 import android.os.Bundle
 import android.view.LayoutInflater

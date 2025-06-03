@@ -1,7 +1,6 @@
-package com.example.sda
+package com.example.canstone2
 
 import android.graphics.Color
-import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -10,11 +9,7 @@ import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import android.widget.TextView
-import android.widget.LinearLayout
-import android.view.View.GONE
-import android.view.View.VISIBLE
 import android.widget.ImageView
-import androidx.core.graphics.drawable.DrawableCompat
 import com.google.firebase.firestore.FirebaseFirestore
 import android.util.Log
 import java.text.SimpleDateFormat

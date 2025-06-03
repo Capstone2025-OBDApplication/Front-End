@@ -1,4 +1,4 @@
-package com.example.sda
+package com.example.canstone2
 
 import android.os.Bundle
 import android.os.Handler
@@ -6,14 +6,16 @@ import android.os.Looper
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.TextView
 import androidx.fragment.app.Fragment
-import com.github.mikephil.charting.data.Entry
 
 class MonitoringFragment : Fragment() {
 
     private lateinit var graphView: CustomGraphView
     private val handler = Handler(Looper.getMainLooper())
     private var index = 0
+    private lateinit var rpmTextView: TextView
+    private lateinit var speedTextView: TextView
 
     // 예시 급발진 데이터 (속도, 브레이크, 엑셀, RPM)
     private val speedList = listOf(
@@ -41,7 +43,8 @@ class MonitoringFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
+        rpmTextView = view.findViewById(R.id.rpmValueTextView)
+        speedTextView = view.findViewById(R.id.speedValueTextView)
         graphView = requireView().findViewById(R.id.graphView)
         simulateRealTimeUpdate()
     }
@@ -54,7 +57,8 @@ class MonitoringFragment : Fragment() {
         val brake = brakeList[index]
         val accel = accelList[index]
         val rpm = rpmList[index]
-
+        rpmTextView.text = rpm.toInt().toString()
+        speedTextView.text = speed.toInt().toString()
         val isSuddenAccel = accel < 5f && speed > 20f && rpm > 2000f
         graphView.updateData(
             xValue = x,

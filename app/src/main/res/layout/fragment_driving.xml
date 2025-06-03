@@ -11,7 +11,7 @@
         android:orientation="vertical">
 
         <!-- 캘린더 컴포넌트 직접 추가 -->
-        <com.example.sda.CustomCalendarView
+        <com.example.canstone2.CustomCalendarView
             android:id="@+id/calendarView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />

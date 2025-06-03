@@ -1,10 +1,12 @@
-package com.example.sda
+package com.example.canstone2
 
 import android.os.Bundle
+import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.firebase.FirebaseApp
+import com.google.firebase.firestore.FirebaseFirestore
 
 
 class MainActivity : AppCompatActivity() {
@@ -21,6 +23,25 @@ class MainActivity : AppCompatActivity() {
         supportActionBar?.hide()
 
         val bottomNavigationView = findViewById<BottomNavigationView>(R.id.bottomNavigationView)
+        val db = FirebaseFirestore.getInstance()
+        db.collection("sensor_data")
+            .get()
+            .addOnSuccessListener { result ->
+                Log.d("Firebase", "✔ 문서 수: ${result.size()}") // ★ 문서 수 출력
+
+                if (result.isEmpty) {
+                    Log.w("Firebase", "⚠️ 문서 없음 or 권한 없음")
+                }
+
+                for (doc in result) {
+                    Log.d("Firebase", "📄 문서 ID: ${doc.id}")
+                    Log.d("Firebase", "📋 내용: ${doc.data}")
+                }
+            }
+            .addOnFailureListener {
+                Log.e("Firebase", "🔥 실패: ${it.message}")
+            }
+
 
         // 기본 페이지: 운전 기록 페이지 (DrivingFragment)
         loadFragment(monitoringFragment)

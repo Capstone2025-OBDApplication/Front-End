@@ -28,7 +28,7 @@
         android:layout_height="wrap_content"
         android:padding="5dp"
         android:background="@drawable/rounded_background"
-        android:backgroundTint="@color/blue"
+        android:backgroundTint="@color/red"
         android:layout_marginBottom="20dp">
 
         <!-- 세로선 -->
@@ -118,7 +118,7 @@
             app:layout_constraintEnd_toEndOf="parent"/>
     </androidx.constraintlayout.widget.ConstraintLayout>
 
-    <com.example.sda.CustomGraphView
+    <com.example.canstone2.CustomGraphView
         android:id="@+id/graphView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
